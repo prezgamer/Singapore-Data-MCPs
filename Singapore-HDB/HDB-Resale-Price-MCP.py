@@ -1,8 +1,7 @@
 import asyncio
 import json
 import logging
-from typing import Any, Dict, List, Optional, Sequence
-from urllib.parse import urlencode
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 import aiohttp
 import sys

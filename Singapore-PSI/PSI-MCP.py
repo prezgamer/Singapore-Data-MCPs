@@ -4,7 +4,6 @@ import requests
 from mcp.server import Server
 import mcp.server.stdio
 import mcp.types as types
-from datetime import datetime
 
 # PSI data fetcher functions
 def fetch_psi_data():

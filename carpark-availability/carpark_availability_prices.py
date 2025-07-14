@@ -4,34 +4,19 @@ import requests
 from urllib.parse import urlencode
 from typing import Optional, Dict, List
 
+# Comprehensive Singapore CarPark System combining static information and real-time availability
 class SingaporeCarParkSystem:
-    """
-    Comprehensive Singapore CarPark System combining static information and real-time availability
-    """
-    
+
+    # Initialize the CarPark System
     def __init__(self, api_key: Optional[str] = None):
-        """
-        Initialize the CarPark System
-        
-        Args:
-            api_key (str, optional): Your data.gov.sg API key for higher rate limits
-        """
         self.api_key = api_key
         self.dataset_id = "d_23f946fa557947f93a8043bbef41dd09"
         self.carpark_info_cache = {}
     
     # ========== CARPARK INFORMATION METHODS ==========
     
+    # Fetch static carpark information (address, type, pricing, etc.)
     def fetch_carpark_info(self, carpark_number: Optional[str] = None) -> Dict:
-        """
-        Fetch static carpark information (address, type, pricing, etc.)
-        
-        Args:
-            carpark_number (str, optional): Specific carpark to search for
-            
-        Returns:
-            dict: Carpark information data
-        """
         url = f"https://data.gov.sg/api/action/datastore_search?resource_id={self.dataset_id}"
         
         try:
@@ -59,13 +44,8 @@ class SingaporeCarParkSystem:
         except json.JSONDecodeError as e:
             return {'error': f'Error parsing JSON response: {e}'}
     
+    # Fetch all carpark information records with pagination
     def fetch_all_carpark_info(self) -> List[Dict]:
-        """
-        Fetch all carpark information records with pagination
-        
-        Returns:
-            list: List of all carpark information records
-        """
         base_url = f"https://data.gov.sg/api/action/datastore_search?resource_id={self.dataset_id}"
         all_records = []
         offset = 0
@@ -102,19 +82,9 @@ class SingaporeCarParkSystem:
     
     # ========== CARPARK AVAILABILITY METHODS ==========
     
+    # Get real-time carpark availability data
     def get_carpark_availability(self, carpark_number: Optional[str] = None, 
                                date_time: Optional[str] = None, timeout: int = 10) -> Dict:
-        """
-        Get real-time carpark availability data
-        
-        Args:
-            carpark_number (str, optional): Specific carpark number to search for
-            date_time (str, optional): ISO format datetime string
-            timeout (int): Request timeout in seconds
-            
-        Returns:
-            dict: API response data
-        """
         conn = http.client.HTTPSConnection("api.data.gov.sg", timeout=timeout)
         
         params = {}
@@ -169,16 +139,8 @@ class SingaporeCarParkSystem:
     
     # ========== COMBINED METHODS ==========
     
+    # Get both static information and real-time availability for a carpark
     def get_complete_carpark_info(self, carpark_number: str) -> Dict:
-        """
-        Get both static information and real-time availability for a carpark
-        
-        Args:
-            carpark_number (str): Carpark number
-            
-        Returns:
-            dict: Combined carpark data
-        """
         carpark_number = carpark_number.upper()
         
         # Get static information
@@ -192,19 +154,8 @@ class SingaporeCarParkSystem:
             'static_info': static_info,
             'availability_info': availability_info
         }
-    
+    # Search carparks by area/address keyword
     def search_carparks_by_area(self, area_keyword: str, include_availability: bool = False, max_results: int = 10) -> List[Dict]:
-        """
-        Search carparks by area/address keyword
-        
-        Args:
-            area_keyword (str): Keyword to search in address
-            include_availability (bool): Whether to include real-time availability
-            max_results (int): Maximum number of results to return
-            
-        Returns:
-            list: List of matching carparks
-        """
         if not self.carpark_info_cache:
             print("Loading carpark database...")
             self.fetch_all_carpark_info()
@@ -238,8 +189,8 @@ class SingaporeCarParkSystem:
     
     # ========== DISPLAY METHODS ==========
     
+    # Print formatted static carpark information
     def print_carpark_static_info(self, carpark_data: Dict):
-        """Print formatted static carpark information"""
         if 'error' in carpark_data:
             print(f"❌ {carpark_data['error']}")
             return
@@ -256,8 +207,8 @@ class SingaporeCarParkSystem:
         print(f"🏠 Basement: {'Yes' if carpark_data['car_park_basement'] == 'Y' else 'No'}")
         print(f"📍 Coordinates: ({carpark_data['x_coord']}, {carpark_data['y_coord']})")
     
+    # Print formatted availability information
     def print_carpark_availability(self, availability_data: Dict):
-        """Print formatted availability information"""
         if 'error' in availability_data:
             print(f"❌ {availability_data['error']}")
             return
@@ -302,8 +253,8 @@ class SingaporeCarParkSystem:
             overall_status = "🟢" if overall_percentage > 50 else "🟡" if overall_percentage > 20 else "🔴"
             print(f"\n{overall_status} Overall: {total_available}/{total_capacity} ({overall_percentage:.1f}% available)")
     
+    # Print both static and availability information
     def print_complete_carpark_info(self, complete_data: Dict):
-        """Print both static and availability information"""
         print("=" * 60)
         print(f"🚗 COMPLETE CARPARK INFORMATION: {complete_data['carpark_number']}")
         print("=" * 60)
@@ -320,15 +271,15 @@ class SingaporeCarParkSystem:
         
         print("=" * 60)
 
+# Quick function to check both info and availability for a carpark
 def quick_check(carpark_number: str, api_key: Optional[str] = None):
-    """Quick function to check both info and availability for a carpark"""
     system = SingaporeCarParkSystem(api_key)
     complete_data = system.get_complete_carpark_info(carpark_number)
     system.print_complete_carpark_info(complete_data)
     return complete_data
 
+# Search carparks in a specific area
 def search_area(area_keyword: str, include_availability: bool = False, max_results: int = 5, api_key: Optional[str] = None):
-    """Search carparks in a specific area"""
     system = SingaporeCarParkSystem(api_key)
     results = system.search_carparks_by_area(area_keyword, include_availability, max_results)
     
@@ -345,10 +296,8 @@ def search_area(area_keyword: str, include_availability: bool = False, max_resul
 
 # ========== MAIN DEMO FUNCTION ==========
 
+# Demo function showing all capabilities
 def main():
-    """
-    Demo function showing all capabilities
-    """
     print("🇸🇬 SINGAPORE CARPARK INFORMATION & AVAILABILITY SYSTEM")
     print("=" * 70)
     

@@ -20,34 +20,19 @@ except ImportError as e:
     logger.error("Please install MCP: pip install mcp")
     sys.exit(1)
 
+# Comprehensive Singapore CarPark System combining static information and real-time availability
 class SingaporeCarParkSystem:
-    """
-    Comprehensive Singapore CarPark System combining static information and real-time availability
-    """
-    
+
+    # Initialize the CarPark System
     def __init__(self, api_key: Optional[str] = None):
-        """
-        Initialize the CarPark System
-        
-        Args:
-            api_key (str, optional): Your data.gov.sg API key for higher rate limits
-        """
         self.api_key = api_key
         self.dataset_id = "d_23f946fa557947f93a8043bbef41dd09"
         self.carpark_info_cache = {}
     
     # ========== CARPARK INFORMATION METHODS ==========
     
+    # Fetch static carpark information (address, type, pricing, etc.)
     def fetch_carpark_info(self, carpark_number: Optional[str] = None) -> Dict:
-        """
-        Fetch static carpark information (address, type, pricing, etc.)
-        
-        Args:
-            carpark_number (str, optional): Specific carpark to search for
-            
-        Returns:
-            dict: Carpark information data
-        """
         url = f"https://data.gov.sg/api/action/datastore_search?resource_id={self.dataset_id}"
         
         try:
@@ -77,13 +62,8 @@ class SingaporeCarParkSystem:
             logger.error(f"JSON decode error: {e}")
             return {'error': f'Error parsing JSON response: {e}'}
     
+    # Fetch all carpark information records with pagination
     def fetch_all_carpark_info(self) -> List[Dict]:
-        """
-        Fetch all carpark information records with pagination
-        
-        Returns:
-            list: List of all carpark information records
-        """
         base_url = f"https://data.gov.sg/api/action/datastore_search?resource_id={self.dataset_id}"
         all_records = []
         offset = 0
@@ -124,19 +104,9 @@ class SingaporeCarParkSystem:
     
     # ========== CARPARK AVAILABILITY METHODS ==========
     
+    # Get real-time carpark availability data
     def get_carpark_availability(self, carpark_number: Optional[str] = None, 
                                date_time: Optional[str] = None, timeout: int = 15) -> Dict:
-        """
-        Get real-time carpark availability data
-        
-        Args:
-            carpark_number (str, optional): Specific carpark number to search for
-            date_time (str, optional): ISO format datetime string
-            timeout (int): Request timeout in seconds
-            
-        Returns:
-            dict: API response data
-        """
         conn = http.client.HTTPSConnection("api.data.gov.sg", timeout=timeout)
         
         params = {}
@@ -176,8 +146,8 @@ class SingaporeCarParkSystem:
             except:
                 pass
     
+    # Filter availability data for specific carpark
     def _filter_carpark_availability(self, json_data: Dict, carpark_number: str) -> Dict:
-        """Filter availability data for specific carpark"""
         if not json_data or 'items' not in json_data:
             return {'error': 'No data available'}
         
@@ -196,16 +166,8 @@ class SingaporeCarParkSystem:
     
     # ========== COMBINED METHODS ==========
     
+    # Get both static information and real-time availability for a carpark
     def get_complete_carpark_info(self, carpark_number: str) -> Dict:
-        """
-        Get both static information and real-time availability for a carpark
-        
-        Args:
-            carpark_number (str): Carpark number
-            
-        Returns:
-            dict: Combined carpark data
-        """
         carpark_number = carpark_number.upper()
         
         # Get static information
@@ -220,18 +182,8 @@ class SingaporeCarParkSystem:
             'availability_info': availability_info
         }
     
+    # Search carparks by area/address keyword
     def search_carparks_by_area(self, area_keyword: str, include_availability: bool = False, max_results: int = 10) -> List[Dict]:
-        """
-        Search carparks by area/address keyword
-        
-        Args:
-            area_keyword (str): Keyword to search in address
-            include_availability (bool): Whether to include real-time availability
-            max_results (int): Maximum number of results to return
-            
-        Returns:
-            list: List of matching carparks
-        """
         # Load cache if empty
         if not self.carpark_info_cache:
             logger.info("Loading carpark database...")
@@ -264,18 +216,8 @@ class SingaporeCarParkSystem:
         
         return matching_carparks
     
+    # Search carparks by carpark number or name pattern
     def search_carparks_by_name(self, name_keyword: str, include_availability: bool = False, max_results: int = 10) -> List[Dict]:
-        """
-        Search carparks by carpark number or name pattern
-        
-        Args:
-            name_keyword (str): Keyword to search in carpark number
-            include_availability (bool): Whether to include real-time availability
-            max_results (int): Maximum number of results to return
-            
-        Returns:
-            list: List of matching carparks
-        """
         # Load cache if empty
         if not self.carpark_info_cache:
             logger.info("Loading carpark database...")
@@ -308,16 +250,8 @@ class SingaporeCarParkSystem:
         
         return matching_carparks
     
+    # Get availability for all carparks (limited to prevent timeout)
     def get_all_carpark_availability(self, max_results: int = 50) -> Dict:
-        """
-        Get availability for all carparks (limited to prevent timeout)
-        
-        Args:
-            max_results (int): Maximum number of carparks to include
-            
-        Returns:
-            dict: All availability data
-        """
         try:
             availability_data = self.get_carpark_availability()
             
@@ -343,9 +277,9 @@ carpark_system = SingaporeCarParkSystem()
 # Create MCP server
 server = Server("singapore-carpark")
 
+# List available tools
 @server.list_tools()
 async def handle_list_tools() -> list[types.Tool]:
-    """List available tools"""
     return [
         types.Tool(
             name="get_carpark_info",
@@ -453,9 +387,9 @@ async def handle_list_tools() -> list[types.Tool]:
         )
     ]
 
+# Handle tool calls
 @server.call_tool()
 async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent]:
-    """Handle tool calls"""
     try:
         logger.info(f"Tool call: {name} with args: {arguments}")
         
@@ -517,9 +451,9 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
     except Exception as e:
         logger.error(f"Tool error in {name}: {e}")
         return [types.TextContent(type="text", text=f"Error: {str(e)}")]
-
+    
+# Run the MCP server
 async def main():
-    """Run the MCP server"""
     logger.info("Starting Enhanced Singapore Carpark MCP Server...")
     
     try:

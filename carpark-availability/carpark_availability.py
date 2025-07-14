@@ -3,20 +3,10 @@ import json
 from urllib.parse import urlencode
 from typing import Optional, Dict, List
 
+# Get carpark availability data from Singapore's data.gov.sg API
 def get_carpark_availability(carpark_number: Optional[str] = None, 
                            date_time: Optional[str] = None,
                            api_key: Optional[str] = None) -> Dict:
-    """
-    Get carpark availability data from Singapore's data.gov.sg API
-    
-    Args:
-        carpark_number (str, optional): Specific carpark number to search for
-        date_time (str, optional): ISO format datetime string (e.g., "2024-06-19T14:30:00")
-        api_key (str, optional): Your data.gov.sg API key for higher rate limits
-    
-    Returns:
-        dict: API response data
-    """
     conn = http.client.HTTPSConnection("api.data.gov.sg")
     
     # Build query parameters
@@ -58,17 +48,8 @@ def get_carpark_availability(carpark_number: Optional[str] = None,
     finally:
         conn.close()
 
+# Filter the API response to return only the specified carpark data
 def filter_carpark_data(json_data: Dict, carpark_number: str) -> Dict:
-    """
-    Filter the API response to return only the specified carpark data
-    
-    Args:
-        json_data (dict): Full API response
-        carpark_number (str): Carpark number to filter for
-    
-    Returns:
-        dict: Filtered carpark data
-    """
     if not json_data or 'items' not in json_data:
         return {}
     
@@ -85,13 +66,8 @@ def filter_carpark_data(json_data: Dict, carpark_number: str) -> Dict:
     
     return {'error': f'Carpark {carpark_number} not found'}
 
+# Print a formatted summary of carpark availability
 def print_carpark_summary(carpark_data: Dict):
-    """
-    Print a formatted summary of carpark availability
-    
-    Args:
-        carpark_data (dict): Carpark data from API
-    """
     if 'error' in carpark_data:
         print(f"❌ {carpark_data['error']}")
         return
@@ -146,20 +122,10 @@ def print_carpark_summary(carpark_data: Dict):
         overall_status = "🟢" if overall_percentage > 50 else "🟡" if overall_percentage > 20 else "🔴"
         print(f"\n{overall_status} Overall: {total_available}/{total_capacity} ({overall_percentage:.1f}% available)")
 
+# Get availability data for multiple carparks
 def get_multiple_carparks(carpark_numbers: List[str], 
                          date_time: Optional[str] = None,
                          api_key: Optional[str] = None) -> List[Dict]:
-    """
-    Get availability data for multiple carparks
-    
-    Args:
-        carpark_numbers (list): List of carpark numbers
-        date_time (str, optional): ISO format datetime string
-        api_key (str, optional): Your data.gov.sg API key
-    
-    Returns:
-        list: List of carpark data dictionaries
-    """
     # Get all data once
     all_data = get_carpark_availability(date_time=date_time, api_key=api_key)
     results = []
@@ -185,9 +151,6 @@ def get_multiple_carparks(carpark_numbers: List[str],
 
 # Example usage functions
 def main():
-    """
-    Example usage of the carpark availability functions
-    """
     print("🚗 Singapore Carpark Availability Checker")
     print("=" * 50)
     
@@ -221,17 +184,6 @@ def main():
 
 # Simple function to quickly check a carpark (most common use case)
 def check_carpark(carpark_number: str, api_key: Optional[str] = None):
-    """
-    Quick function to check availability for a single carpark
-    
-    Args:
-        carpark_number (str): Carpark number (e.g., "TB6", "TB7")
-        api_key (str, optional): Your data.gov.sg API key
-    
-    Example:
-        check_carpark("TB6")
-        check_carpark("TB7", api_key="your_api_key")
-    """
     print(f"🔍 Checking carpark {carpark_number.upper()}...")
     data = get_carpark_availability(carpark_number=carpark_number, api_key=api_key)
     print_carpark_summary(data)
