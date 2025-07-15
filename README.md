@@ -1441,3 +1441,5 @@ This server is provided for sun safety, health planning, and educational purpose
 This is an unofficial tool that interfaces with Singapore's official UV monitoring APIs. The authors are not affiliated with the National Environment Agency (NEA) or government environmental agencies. For official UV advisories, health warnings, and medical guidance, please consult the National Environment Agency (NEA) and seek professional medical advice for skin health concerns.
 
 ---
+
+README is assisted with Generative AI (Claude.AI) 
