@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-"""
-HDB Resale Data Analyzer
-
-This script provides comprehensive analysis and sorting of Singapore HDB resale flat data.
-It can sort by price, calculate averages, and filter by various criteria.
-"""
-
 import requests
 import json
 import pandas as pd
