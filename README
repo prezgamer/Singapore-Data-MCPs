@@ -1,3 +1,5 @@
+
+
 # Singapore Data.gov MCP Server
 
 A Model Context Protocol (MCP) server that provides seamless access to Singapore's official government data through data.gov.sg APIs. 
@@ -492,29 +494,6 @@ logging.basicConfig(level=logging.DEBUG)
 - Salary data reflects 6-month post-graduation surveys
 - Employment rates may vary by economic conditions
 
-## Sample Queries
-
-### For Students/Career Counselors
-```
-"What are the employment prospects for computer science graduates?"
-"Compare salary expectations for business vs engineering degrees"
-"Show me the best performing degrees at NTU"
-```
-
-### For Researchers/Analysts
-```
-"Analyze salary trends for STEM degrees over the past 5 years"
-"Compare employment rates across different university schools"
-"What degrees have the most consistent salary distributions?"
-```
-
-### For Parents/Students
-```
-"What are the highest paying degrees I can study in Singapore?"
-"Which university has the best employment rates for my field?"
-"How do graduate salaries compare between local universities?"
-```
-
 ## License
 
 This server is provided for educational and research purposes. Please respect data.gov.sg's terms of service and cite the Graduate Employment Survey when using this data.
@@ -870,35 +849,6 @@ if not error:
 - Geographic boundaries are precisely mapped
 - Information is updated as health authorities confirm new cases
 
-## Public Health Context
-
-### Dengue Prevention
-Understanding hotspot locations helps with:
-- **Mosquito Control**: Targeting areas for vector control measures
-- **Public Awareness**: Informing residents of high-risk areas
-- **Travel Planning**: Making informed decisions about area visits
-- **Health Preparedness**: Knowing where to expect potential cases
-
-### Disease Surveillance
-This data supports:
-- **Outbreak Tracking**: Monitoring disease spread patterns
-- **Resource Allocation**: Directing public health resources
-- **Prevention Campaigns**: Focusing education efforts
-- **Risk Assessment**: Evaluating community health risks
-
-## Technical Details
-
-### Data Processing
-- **GeoJSON Parsing**: Automatic handling of geographic data formats
-- **Coordinate Processing**: Extraction of polygon boundary points
-- **Error Handling**: Graceful handling of API and data format issues
-- **Real-time Updates**: Fresh data from health surveillance systems
-
-### Geographic Features
-- **Polygon Boundaries**: Precise area definitions for each hotspot
-- **Coordinate Arrays**: Multiple points defining outbreak area perimeters
-- **Locality Mapping**: Connection between coordinates and neighborhood names
-
 ## License
 
 This server is provided for public health awareness and educational purposes. Please respect data.gov.sg's terms of service when using this health surveillance data.
@@ -1020,6 +970,13 @@ Get comprehensive statistics about lease remaining across different ranges.
 
 **Returns:** Distribution of flats across lease ranges with statistical summaries.
 
+### System Tools
+
+#### 9. `health_check`
+Check server health and performance status.
+
+**Returns:** Server status, cache information, and performance metrics.
+
 ### Manual Setup
 
 1. Save the server code to a file (e.g., `HDB-Resale-Price-MCP.py`)
@@ -1038,13 +995,6 @@ Get comprehensive statistics about lease remaining across different ranges.
   }
 }
 ```
-
-### System Tools
-
-#### 9. `health_check`
-Check server health and performance status.
-
-**Returns:** Server status, cache information, and performance metrics.
 
 ## Usage Examples
 
@@ -1245,29 +1195,6 @@ This server integrates with Singapore's official weather monitoring system:
 - **Coverage**: Island-wide weather monitoring network
 - **Update Frequency**: Real-time updates (typically every few minutes)
 - **Data Quality**: Official meteorological measurements from calibrated instruments
-
-## Health and Comfort Context
-
-### Optimal Humidity Ranges
-Understanding humidity levels helps with:
-- **Comfort Planning**: Choosing appropriate clothing and activities
-- **Health Considerations**: Managing respiratory and skin conditions
-- **Indoor Environment**: Adjusting air conditioning and dehumidifiers
-- **Activity Scheduling**: Planning outdoor activities during comfortable conditions
-
-### Humidity Impact
-- **Low Humidity** (< 40%): Can cause dry skin, static electricity, respiratory irritation
-- **High Humidity** (> 70%): Can reduce cooling efficiency, increase perceived temperature, promote mold growth
-- **Optimal Range** (40-60%): Supports comfort, health, and efficient body temperature regulation
-
-## Environmental Monitoring
-
-### Weather Patterns
-This data supports:
-- **Daily Planning**: Making informed decisions about outdoor activities
-- **Health Management**: Understanding environmental factors affecting well-being
-- **Climate Awareness**: Monitoring Singapore's tropical humidity patterns
-- **Research Applications**: Supporting studies on urban weather patterns
 
 ## License
 
